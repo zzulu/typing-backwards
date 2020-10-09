@@ -1,10 +1,22 @@
 <template>
   <div class="row">
     <ul class="col-12 offset-sm-1 col-sm-10 offset-md-2 col-md-8 offset-lg-3 col-lg-6 mb-5">
-      <li v-for="comment in reversedComments" :key="comment.createdAt" class="comment">
-        <div class="comment__author">{{ comment.author }}</div>
-        <div class="comment__content">{{ comment.content }}</div>
-      </li>
+      <template v-if="!loading">
+        <li v-for="comment in reversedComments" :key="comment.createdAt" class="comment">
+          <div class="comment__author">{{ comment.author }}</div>
+          <div class="comment__content">{{ comment.content }}</div>
+        </li>
+      </template>
+      <template v-else>
+        <li class="comment">
+          <div class="comment__author loading"></div>
+          <div class="comment__content loading"></div>
+        </li>
+        <li class="comment">
+          <div class="comment__author loading"></div>
+          <div class="comment__content loading"></div>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
@@ -14,6 +26,7 @@ export default {
   name: 'Comments',
   props: {
     comments: Array,
+    loading: Boolean,
   },
   computed: {
     reversedComments() {
@@ -43,5 +56,19 @@ ul {
 
 .comment__content {
   font-size: 1.25rem;
+}
+
+.comment__author.loading {
+  background-color: #f1f3f5;
+  height: 1.25rem;
+  width: 5rem;
+  margin-top: .375rem;
+  margin-bottom: .125rem;
+}
+
+.comment__content.loading {
+  background-color: #f1f3f5;
+  height: 1.5rem;
+  margin-top: .5rem;
 }
 </style>

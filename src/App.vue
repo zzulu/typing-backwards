@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <InputBackwards v-on:create-comment="createComment" :user="user" />
-    <Comments :comments="comments" />
+    <Comments :comments="comments" :loading="commentsLoading" />
   </div>
 </template>
 
@@ -23,10 +23,8 @@ export default {
         author: '',
       },
       comments: [],
+      commentsLoading: true,
     }
-  },
-  firebase: {
-    comments: db.ref('comments').limitToLast(100),
   },
   methods: {
     createComment(comment) {
@@ -44,6 +42,9 @@ export default {
             uid: user.uid,
             author: this.createAuthor(user.uid),
           }
+          this.$rtdbBind('comments', db.ref('comments').limitToLast(100)).then(() => {
+            this.commentsLoading = false
+          })
         } else {
           this.user = { uid: '', author: '' }
           firebase.auth().signInAnonymously().catch(() => {
