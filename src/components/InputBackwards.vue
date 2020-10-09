@@ -1,7 +1,7 @@
 <template>
   <div class="row">
-    <form class="inverted col-12 offset-sm-1 col-sm-10 offset-md-2 col-md-8 offset-lg-3 col-lg-6">
-      <input id="sentence" class="box" type="text" v-on:input="updateInput($event)" autocomplete="off">
+    <form v-on:submit.prevent="createComment($event)" class="inverted col-12 offset-sm-1 col-sm-10 offset-md-2 col-md-8 offset-lg-3 col-lg-6">
+      <input id="sentence" class="box" type="text" v-on:input="updateInput($event)" autocomplete="off" autofocus>
       <label for="sentence" class="box assembled"><span id="caret" :class="{ blink: blink }"></span>{{ assembled }}</label>
     </form>
   </div>
@@ -12,6 +12,9 @@ import Hangul from 'hangul-js'
 
 export default {
   name: 'InputBackwards',
+  props: {
+    user: Object,
+  },
   data() {
     return {
       history: [],
@@ -27,7 +30,22 @@ export default {
     updateInput(event) {
       this.history = Hangul.d(event.target.value)
       event.target.value = [...this.history].join('')
-
+      this.resetBlink()
+    },
+    createComment(event) {
+      this.$emit('create-comment', {
+        uid: this.user.uid,
+        author: this.user.author,
+        content: this.assembled,
+        createdAt: Date.now(),
+      })
+      this.clearInput(event.target.firstElementChild)
+    },
+    clearInput(target) {
+      this.history = []
+      target.value = ''
+    },
+    resetBlink() {
       this.blink = false; window.setTimeout(() => { this.blink = true }, 1);
     },
   },
@@ -47,7 +65,7 @@ input:focus {
   display: block;
   width: 100%;
   border: 1px solid #ced4da;
-  padding: .5rem 1rem;
+  padding: 1.25rem 2rem;
   font-size: 1.25rem;
   font-weight: 400;
   color: #495057;
@@ -68,14 +86,14 @@ input:focus {
 .assembled {
   cursor: text;
   position: relative;
-  top: calc((1.5em + 1rem + 2px) * -1);
+  top: calc((1.5em + 2.5rem + 2px) * -1);
 }
 
 .assembled > .blink {
   display: inline-block;
   vertical-align: text-bottom;
   width: 1px;
-  height: 1.45rem;
+  height: 1.8rem;
   margin-right: 2px;
 }
 
@@ -96,5 +114,4 @@ input:focus {
     background-color: transparent;
   }
 }
-
 </style>
