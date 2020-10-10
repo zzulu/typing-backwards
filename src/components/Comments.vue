@@ -8,11 +8,7 @@
         </li>
       </template>
       <template v-else>
-        <li class="comment">
-          <div class="comment__author loading"></div>
-          <div class="comment__content loading"></div>
-        </li>
-        <li class="comment">
+        <li v-for="n in 3" class="comment" :key="n">
           <div class="comment__author loading"></div>
           <div class="comment__content loading"></div>
         </li>
