@@ -29,7 +29,9 @@ export default {
   methods: {
     updateInput(event) {
       this.history = Hangul.d(event.target.value)
-      event.target.value = [...this.history].join('')
+      if (event.inputType === 'deleteContentBackward') {
+        event.target.value = [...this.history].join('')
+      }
       this.resetBlink()
     },
     createComment(event) {
